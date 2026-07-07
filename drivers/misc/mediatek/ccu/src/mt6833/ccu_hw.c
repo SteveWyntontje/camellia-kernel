@@ -1127,20 +1127,20 @@ void *ccu_da_to_va(u64 da, int len)
 	struct CcuMemInfo *bin_mem = ccu_get_binary_memory();
 
 	if (bin_mem == NULL) {
-		LOG_ERR("failed lookup da(%x), bin_mem NULL", da);
+		LOG_ERR("failed lookup da(%llx), bin_mem NULL", da);
 		return NULL;
 	}
 	if (da < CCU_CACHE_BASE) {
 		offset = da;
 		if ((offset >= 0) && ((offset + len) < CCU_PMEM_SIZE)) {
-			LOG_INF_MUST("da(0x%lx) to va(0x%lx)",
+			LOG_INF_MUST("da(0x%llx) to va(0x%llx)",
 				da, pmem_base + offset);
 			return (uint32_t *)(pmem_base + offset);
 		}
 	} else if (da >= CCU_CORE_DMEM_BASE) {
 		offset = da - CCU_CORE_DMEM_BASE;
 		if ((offset >= 0) && ((offset + len) < CCU_DMEM_SIZE)) {
-			LOG_INF_MUST("da(0x%lx) to va(0x%lx)",
+			LOG_INF_MUST("da(0x%llx) to va(0x%llx)",
 				da, dmem_base + offset);
 			return (uint32_t *)(dmem_base + offset);
 		}
@@ -1148,13 +1148,13 @@ void *ccu_da_to_va(u64 da, int len)
 		offset = da - CCU_CACHE_BASE;
 		if ((offset >= 0) &&
 		((offset + len) < CCU_CTRL_BUF_TOTAL_SIZE)) {
-			LOG_INF_MUST("da(0x%lx) to va(0x%lx)",
+			LOG_INF_MUST("da(0x%llx) to va(0x%p)",
 				da, bin_mem->va + offset);
 			return (uint32_t *)(bin_mem->va + offset);
 		}
 	}
 
-	LOG_ERR("failed lookup da(%x) len(%x) to va, offset(%x)", da, offset);
+	LOG_ERR("failed lookup da(%llx) to va, offset(%x)", da, offset);
 	return NULL;
 }
 

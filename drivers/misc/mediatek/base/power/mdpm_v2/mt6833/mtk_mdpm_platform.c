@@ -562,7 +562,7 @@ void init_md1_section_level(u32 *share_mem)
 		share_mem[M_NR_SECTION_3_LEVEL]);
 }
 
-enum md_scenario get_md1_scenario(u32 share_reg,
+unsigned int get_md1_scenario(u32 share_reg,
 	enum mdpm_power_type power_type)
 {
 	int scenario = S_STANDBY;
@@ -582,7 +582,7 @@ enum md_scenario get_md1_scenario(u32 share_reg,
 }
 
 #ifdef GET_MD_SCEANRIO_BY_SHARE_MEMORY
-enum md_scenario get_md1_scenario_by_shm(u32 *share_mem)
+unsigned int get_md1_scenario_by_shm(u32 *share_mem)
 {
 	int scenario = S_STANDBY;
 	u32 scen_status = -1;
@@ -603,7 +603,7 @@ enum md_scenario get_md1_scenario_by_shm(u32 *share_mem)
 }
 #endif
 
-int get_md1_scenario_power(enum md_scenario scenario,
+int get_md1_scenario_power(unsigned int scenario,
 	enum mdpm_power_type power_type, struct md_power_status *mdpm_pwr_sta)
 {
 	int s_power = 0;

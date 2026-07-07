@@ -12,10 +12,12 @@
 #
 
 ccflags-y += \
+	-I$(PPM_ROOT_DIR)/src/mach/$(CONFIG_MTK_PLATFORM) \
 	-I$(PPM_ROOT_DIR)/inc \
 	-I$(srctree)/drivers/misc/mediatek/include/mt-plat/$(CONFIG_MTK_PLATFORM)/include	\
 	-I$(srctree)/drivers/misc/mediatek/base/power/include	\
 	-I$(srctree)/drivers/misc/mediatek/base/power/$(CONFIG_MTK_PLATFORM)	\
+	-I$(srctree)/drivers/misc/mediatek/base/power/ppm_v3/src/mach/mt6853
 
 ifneq (,$(findstring 3gear,$(PROJECT_DTB_NAMES)))
 ccflags-y += -I$(PPM_ROOT_DIR)/src/mach/mt6893
@@ -29,6 +31,7 @@ endif
 
 ifeq ($(CONFIG_MTK_TINYSYS_SSPM_SUPPORT), y)
 ccflags-y += \
+	-I$(PPM_ROOT_DIR)/src/mach/$(CONFIG_MTK_PLATFORM) \
 	-I$(srctree)/drivers/misc/mediatek/sspm/	\
 	-I$(srctree)/drivers/misc/mediatek/sspm/$(CONFIG_MTK_PLATFORM)
 endif

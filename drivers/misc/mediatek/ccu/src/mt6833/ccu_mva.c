@@ -183,7 +183,7 @@ int ccu_allocate_mem(struct CcuMemHandle *memHandle, int size, bool cached)
 		0, (size_t)size, (cached)?3:0, memHandle->meminfo.ion_log);
 
 	if (!memHandle->ionHandleKd) {
-		LOG_ERR("fail to get ion buffer handle (size=0x%lx)\n", size);
+		LOG_ERR("fail to get ion buffer handle (size=0x%x)\n", size);
 		return -1;
 	}
 
@@ -223,7 +223,7 @@ int ccu_deallocate_mem(struct CcuMemHandle *memHandle)
 		ccu_buffer_handle[idx].meminfo.mva,
 		ccu_buffer_handle[idx].meminfo.shareFd);
 	if (ccu_buffer_handle[idx].ionHandleKd == 0) {
-		LOG_ERR("idx %d handle %d is empty\n", idx,
+		LOG_ERR("idx %d handle %p is empty\n", idx,
 			ccu_buffer_handle[idx].ionHandleKd);
 		return -EINVAL;
 	}

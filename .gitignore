@@ -48,6 +48,7 @@ modules.builtin
 /tags
 /TAGS
 /linux
+/resume.txt
 /vmlinux
 /vmlinux.32
 /vmlinux-gdb.py

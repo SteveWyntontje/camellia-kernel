@@ -3720,7 +3720,7 @@ int mtk_mipi_dsi_write_gce(struct mtk_dsi *dsi,
 	DDPMSG("%s +\n", __func__);
 
 	/* Check cmd_msg param */
-	if (cmd_msg->type == 0 ||
+	if (cmd_msg->type[0] == 0 ||
 		cmd_msg->tx_cmd_num == 0 ||
 		cmd_msg->tx_cmd_num > MAX_TX_CMD_NUM) {
 		DDPPR_ERR("%s: type is %s, tx_cmd_num is %d\n",
@@ -3951,7 +3951,7 @@ int mtk_mipi_dsi_read_gce(struct mtk_dsi *dsi,
 	DDPMSG("%s +\n", __func__);
 
 	/* Check cmd_msg param */
-	if (cmd_msg->type == 0 ||
+	if (cmd_msg->type[0] == 0 ||
 		cmd_msg->tx_cmd_num == 0 ||
 		cmd_msg->rx_cmd_num == 0 ||
 		cmd_msg->tx_cmd_num > MAX_TX_CMD_NUM ||

@@ -694,7 +694,7 @@ info_retry:
 
 	NVT_LOG("fw_ver = 0x%02X, fw_type = 0x%02X\n", ts->fw_ver, buf[14]);
 	/*BSP.Touch - 2020.11.13 - add for hw_info start*/
-	printk("[%s]: fw_ver = 0x%02x \n", ts->fw_ver);
+	printk("[%s]: fw_ver = 0x%02x \n", __func__, ts->fw_ver);
 	tp_fw_version = ts->fw_ver;
 	/*BSP.Touch - 2020.11.13 - add for hw_info end*/
 	//---Get Novatek PID---
@@ -1602,18 +1602,18 @@ static int nvt_set_cur_value(int mode, int value)
 		}
 
 		if (mode == 2) {
-			NVT_LOG("choose mode 2 sensitivity\n", __func__);
+			NVT_LOG("choose mode 2 sensitivity\n");
 			nvt_set_sensitivity_switch(xiaomi_touch_interfaces.touch_mode[mode][SET_CUR_VALUE]);
 		} else if (mode == 3) {
-			NVT_LOG("choose mode 3 pf\n", __func__);
+			NVT_LOG("choose mode 3 pf\n");
 			nvt_set_pf_switch(xiaomi_touch_interfaces.touch_mode[mode][SET_CUR_VALUE]);
 		} else if (mode == 7) {
-			NVT_LOG("choose mode 7 er_range\n", __func__);
+			NVT_LOG("choose mode 7 er_range\n");
 			nvt_set_er_range_switch(xiaomi_touch_interfaces.touch_mode[mode][SET_CUR_VALUE]);
 		} else
-			NVT_LOG("don't support\n", __func__);
+			NVT_LOG("don't support\n");
 	} else
-		NVT_LOG("don't support\n", __func__);
+		NVT_LOG("don't support\n");
 
 	return 0;
 }
@@ -1626,25 +1626,25 @@ static int nvt_get_mode_cur_value(int mode)
 	if (mode < Touch_Mode_NUM && mode >= 0) {
 		printk("%s ,mode = %d\n", __func__, mode);
 		if (mode == 2) {
-			NVT_LOG("choose mode 2 sensitivity\n", __func__);
+			NVT_LOG("choose mode 2 sensitivity\n");
 			pf_switch = xiaomi_touch_interfaces.touch_mode[mode][SET_CUR_VALUE];
 			ret = nvt_get_sensitivity_switch(&pf_switch);
 		} else if (mode == 3) {
-			NVT_LOG("choose mode 3 pf\n", __func__);
+			NVT_LOG("choose mode 3 pf\n");
 			pf_switch = xiaomi_touch_interfaces.touch_mode[mode][SET_CUR_VALUE];
 			ret = nvt_get_pf_switch(&pf_switch);
 		} else if (mode == 7) {
-			NVT_LOG("choose mode 7 er_range\n", __func__);
+			NVT_LOG("choose mode 7 er_range\n");
 			pf_switch = xiaomi_touch_interfaces.touch_mode[mode][SET_CUR_VALUE];
 			ret = nvt_get_er_range_switch(&pf_switch);
 		} else {
 			pf_switch = 0;
-			NVT_LOG("don't support\n", __func__);
+			NVT_LOG("don't support\n");
 			}
 	} else {
 		printk("%s, mode %d don't support\n", __func__, mode);
 	}
-	printk("%s mode:%d pf_switch:%d\n", mode, pf_switch);
+	printk("%s mode:%d pf_switch:%d\n", __func__, mode, pf_switch);
 	return pf_switch;
 }
 
@@ -1708,7 +1708,7 @@ static int nvt_get_mode_all(int mode, int *value)
 		value[2] = xiaomi_touch_interfaces.touch_mode[mode][GET_MIN_VALUE];
 		value[3] = xiaomi_touch_interfaces.touch_mode[mode][GET_MAX_VALUE];
 	} else{
-		NVT_LOG("don't support\n", __func__);
+		NVT_LOG("don't support\n");
 	}
 	printk("%s,mode:%d, value:%d:%d:%d:%d\n", __func__, mode, value[0],
 					value[1], value[2], value[3]);

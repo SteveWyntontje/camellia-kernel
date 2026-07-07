@@ -218,7 +218,7 @@ static inline void cmdq_mmp_init(struct cmdq_sec *cmdq)
 
 	len = snprintf(name, sizeof(name), "cmdq_sec_%hhu", cmdq->hwid);
 	if (len >= sizeof(name))
-		cmdq_log("len:%d over name size:%d", len, sizeof(name));
+		cmdq_log("len:%ld over name size:%d", len, sizeof(name));
 
 	cmdq->mmp.cmdq_root = mmprofile_register_event(MMP_ROOT_EVENT, "CMDQ");
 	cmdq->mmp.cmdq = mmprofile_register_event(cmdq->mmp.cmdq_root, name);

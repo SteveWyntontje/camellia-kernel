@@ -20,7 +20,7 @@
 #ifdef CONFIG_MTK_DEVAPC
 #include <mt-plat/devapc_public.h>
 #endif
-#include <clk-mux.h>
+#include "clk-mux.h"
 #include "clkdbg.h"
 #include "clkdbg-mt6833.h"
 #include "clk-fmeter.h"

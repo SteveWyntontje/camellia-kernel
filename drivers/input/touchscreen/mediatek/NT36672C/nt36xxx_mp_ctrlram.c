@@ -1228,8 +1228,7 @@ return:
 static int32_t nvt_selftest_open(struct inode *inode, struct file *file)
 {
 	struct device_node *np = ts->client->dev.of_node;
-	unsigned char mpcriteria[4096] = {0};	//novatek-mp-criteria-default
-
+	unsigned char *mpcriteria;
 	uint8_t buf[8] = {0};
 	TestResult_SPI_Comm = 0;
 	TestResult_Short = 0;
@@ -1241,9 +1240,16 @@ static int32_t nvt_selftest_open(struct inode *inode, struct file *file)
 	TestResult_FW_DiffMax = 0;
 	TestResult_FW_DiffMin = 0;
 
+	mpcriteria = kzalloc(4096, GFP_KERNEL);
+	if (!mpcriteria) {
+		NVT_ERR("kzalloc for mpcriteria failed\n");
+		return -ENOMEM;
+	}
+
 	NVT_LOG("++\n");
 
 	if (mutex_lock_interruptible(&ts->lock)) {
+		kfree(mpcriteria);
 		return -ERESTARTSYS;
 	}
 
@@ -1269,6 +1275,7 @@ static int32_t nvt_selftest_open(struct inode *inode, struct file *file)
 	if (nvt_get_fw_info()) {
 		mutex_unlock(&ts->lock);
 		NVT_ERR("get fw info failed!\n");
+		kfree(mpcriteria);
 		return -EAGAIN;
 	}
 
@@ -1291,6 +1298,7 @@ static int32_t nvt_selftest_open(struct inode *inode, struct file *file)
 			nvt_update_firmware(BOOT_UPDATE_FIRMWARE_NAME);
 			mutex_unlock(&ts->lock);
 			NVT_ERR("mp parse device tree failed!\n");
+			kfree(mpcriteria);
 			return -EINVAL;
 		}
 	} else {
@@ -1302,12 +1310,14 @@ static int32_t nvt_selftest_open(struct inode *inode, struct file *file)
 	if (nvt_switch_FreqHopEnDis(FREQ_HOP_DISABLE)) {
 		mutex_unlock(&ts->lock);
 		NVT_ERR("switch frequency hopping disable failed!\n");
+		kfree(mpcriteria);
 		return -EAGAIN;
 	}
 
 	if (nvt_check_fw_reset_state(RESET_STATE_NORMAL_RUN)) {
 		mutex_unlock(&ts->lock);
 		NVT_ERR("check fw reset state failed!\n");
+		kfree(mpcriteria);
 		return -EAGAIN;
 	}
 
@@ -1317,6 +1327,7 @@ static int32_t nvt_selftest_open(struct inode *inode, struct file *file)
 	if (nvt_clear_fw_status()) {
 		mutex_unlock(&ts->lock);
 		NVT_ERR("clear fw status failed!\n");
+		kfree(mpcriteria);
 		return -EAGAIN;
 	}
 
@@ -1325,6 +1336,7 @@ static int32_t nvt_selftest_open(struct inode *inode, struct file *file)
 	if (nvt_check_fw_status()) {
 		mutex_unlock(&ts->lock);
 		NVT_ERR("check fw status failed!\n");
+		kfree(mpcriteria);
 		return -EAGAIN;
 	}
 
@@ -1399,6 +1411,7 @@ err_nvt_spi_read:
 
 	nvt_mp_test_result_printed = 0;
 
+	kfree(mpcriteria);
 	return seq_open(file, &nvt_selftest_seq_ops);
 }
 
@@ -1774,7 +1787,12 @@ static ssize_t nvt_tp_selftest_store(struct file *file, const char __user *buff,
 	char *buff_tmp = kzalloc(count + 1, GFP_KERNEL);
 
 	struct device_node *np = ts->client->dev.of_node;
-	unsigned char mpcriteria[4096] = {0}; //novatek-mp-criteria-default
+	unsigned char *mpcriteria;
+	mpcriteria = kzalloc(4096, GFP_KERNEL);
+	if (!mpcriteria) {
+		NVT_ERR("kzalloc for mpcriteria failed\n");
+		return -ENOMEM;
+	}
 
 	TestResult_Short = 0;
 	TestResult_Open = 0;
@@ -1792,6 +1810,7 @@ static ssize_t nvt_tp_selftest_store(struct file *file, const char __user *buff,
 	if (ret) {
 		NVT_ERR("%s: copy_from_user failed.", __func__);
 		kfree(buff_tmp);
+		kfree(mpcriteria);
 		return -EFAULT;
 	}
 
@@ -1808,6 +1827,7 @@ static ssize_t nvt_tp_selftest_store(struct file *file, const char __user *buff,
 		NVT_LOG("bTouchIsAwake=%d, TP_SELFTEST_TestResult_SPI_Comm=%d\n",
 			bTouchIsAwake, TP_SELFTEST_TestResult_SPI_Comm);
 		kfree(buff_tmp);
+		kfree(mpcriteria);
 		return count;
 	} else if (!strncmp(buff_tmp, "short", 5)) {
 		TP_SELFTEST_Short_flag = 1;
@@ -1817,6 +1837,7 @@ static ssize_t nvt_tp_selftest_store(struct file *file, const char __user *buff,
 			NVT_LOG("bTouchIsAwake=%d, TP_SELFTEST_TestResult_Short=%d\n",
 				bTouchIsAwake, TP_SELFTEST_TestResult_Short);
 			kfree(buff_tmp);
+			kfree(mpcriteria);
 			return count;
 		}
 	} else if (!strncmp(buff_tmp, "open", 4)) {
@@ -1827,11 +1848,13 @@ static ssize_t nvt_tp_selftest_store(struct file *file, const char __user *buff,
 			NVT_LOG("bTouchIsAwake=%d, TP_SELFTEST_TestResult_Open=%d\n",
 				bTouchIsAwake, TP_SELFTEST_TestResult_Open);
 			kfree(buff_tmp);
+			kfree(mpcriteria);
 			return count;
 		}
 	} else {
 		NVT_LOG("%s: input keywords : %s, Invalid\n", __func__, buff_tmp);
 		kfree(buff_tmp);
+		kfree(mpcriteria);
 		return -EINVAL;
 	}
 
@@ -1936,6 +1959,7 @@ static ssize_t nvt_tp_selftest_store(struct file *file, const char __user *buff,
 	NVT_LOG("+++end test \n");
 
 	nvt_mp_test_result_printed = 0;
+
 
 	kfree(buff_tmp);
 	return count;

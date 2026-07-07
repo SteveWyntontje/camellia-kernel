@@ -494,10 +494,10 @@ static int mtk_drm_esd_check_worker_kthread(void *data)
 		msleep(ESD_CHECK_PERIOD);
 		ret = wait_event_interruptible(
 			esd_ctx->check_task_wq,
-			atomic_read(&esd_ctx->check_wakeup) &&
-			(atomic_read(&esd_ctx->target_time) ||
-			(panel_ext->params->cust_esd_check == 0) &&
-			 (esd_ctx->chk_mode == READ_EINT)));
+			((atomic_read(&esd_ctx->check_wakeup) &&
+			(atomic_read(&esd_ctx->target_time))) ||
+			(((panel_ext->params->cust_esd_check == 0) &&
+			 (esd_ctx->chk_mode == READ_EINT)))));
 		if (ret < 0) {
 			DDPINFO("[ESD]check thread waked up accidently\n");
 			continue;
